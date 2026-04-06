@@ -17,8 +17,8 @@
 
 ## שלב 2 – מודל הנתונים 📦
 
-- [ ] `PageData.java` – שדות: url, title, wordCount, outgoingLinks, domain, status, depth (getters בלבד)
-- [ ] `CrawlResult.java` – מחזיק `List<PageData>` ו-`Map<String,Object>` לניתוחים
+- [x] `PageData.java` – שדות: url, title, wordCount, outgoingLinks, domain, status, depth (getters בלבד)
+- [x] `CrawlResult.java` – מחזיק `List<PageData>` ו-`Map<String,Object>` לניתוחים
 
 ---
 
@@ -131,7 +131,7 @@
 | שלב | כמה משימות | הושלמו |
 |-----|-----------|--------|
 | 1 – Maven | 5 | 5 ✅ |
-| 2 – מודל נתונים | 2 | 0 |
+| 2 – מודל נתונים | 2 | 2 ✅ |
 | 3 – CLI | 8 | 0 |
 | 4 – ניתוחים | 8 | 0 |
 | 5 – פלט | 4 | 0 |
