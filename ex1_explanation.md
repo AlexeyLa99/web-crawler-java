@@ -1,4 +1,9 @@
-# EX1 Explanation
+# EX1 – Final Implementation Plan (sourced from ex1.pdf)
+
+> This file summarizes all confirmed requirements from the official PDF.
+> See the implementation plan in `.cursor/plans/` for granular task breakdown.
+
+
 
 ## What Are We Building?
 
