@@ -1,149 +1,158 @@
 # רשימת משימות – EX1 Concurrent WebCrawler
 
-> סדר הביצוע: מלמטה למעלה – כל שלב בנוי על הקודם.
-> סמן ✅ כאשר משימה הושלמה.
+> **סמלים:** ✅ הושלם | 🔵 A = אלכסיי | 🟣 T = טליה
+> כל branch נסגר עם PR review של הצד השני לפני merge.
+> אף אחד לא עובר לספרינט הבא לפני שה-PR של השני נסגר.
 
 ---
 
-## שלב 1 – הגדרת הפרויקט (Maven) 🏗️
+## ✅ בסיס – הושלם (שניהם)
 
-- [x] יצירת `pom.xml` עם groupId=`webcrawler`, artifactId=`ex1`, גרסה=`1.0`, Java 25
-- [x] הוספת תלות Jsoup 1.18.3
-- [x] הוספת תלות Jackson Databind 2.17.2
-- [x] הגדרת `maven-assembly-plugin` עם Main-Class = `webcrawler.Main`
-- [x] יצירת עץ התיקיות: `src/main/java/webcrawler/{cli,crawler,analysis,output,input,filter,observer,result}`
-
----
-
-## שלב 2 – מודל הנתונים 📦
-
-- [x] `PageData.java` – שדות: url, title, wordCount, outgoingLinks, domain, status, depth (getters בלבד)
-- [x] `CrawlResult.java` – מחזיק `List<PageData>` ו-`Map<String,Object>` לניתוחים
+- [x] יצירת `pom.xml` עם Java 25, Jsoup 1.18.3, Jackson 2.17.2, maven-assembly-plugin
+- [x] יצירת עץ תיקיות `src/main/java/webcrawler/{cli,crawler,analysis,output,input,filter,observer,result}`
+- [x] `PageData.java` – url, title, wordCount, outgoingLinks, domain, status, depth
+- [x] `CrawlResult.java` – מחזיק `List<PageData>` + `Map<String,Object>`
 
 ---
 
-## שלב 3 – פרסור שורת הפקודה (CLI) ⌨️
+## ✅ Sprint 1 – CLI (branch: `feature/cli-complete`) – **הושלם**
 
-- [x] `CrawlConfig.java` – כל השדות כ-`private final`
-- [x] `CrawlConfig.Builder` – inner class עם setters ו-`build()`
-- [ ] `CliParser.java` – **בתהליך** – שלד + Javadoc נכתב; נשאר למלא את ה-`switch`:
-  - [ ] `--analysis` – פיצול לפי פסיק, סינון unknowns, יציאה אם אין תקף
-  - [ ] `--poolsize` – parseInt, בדיקת > 0, הודעת `invalid pool size`
-  - [ ] `--depth` – parseInt, בדיקת >= 0, הודעת `invalid depth`
-  - [ ] `--input` – בדיקת קיום קובץ, הודעת `invalid input file`
-  - [ ] `--output` – שמירת הנתיב בלבד
-  - [ ] `--format` – שמירת פורמט (אופציונלי, ברירת מחדל `json`)
-  - [ ] `--domains` – פיצול לפי פסיק ל-Set (אופציונלי)
+> 🔵 **אלכסיי** כתב | 🟣 **טליה** ביצעה review לפני merge
 
----
-
-## שלב 4 – ניתוחים (Analysis Strategies) 📊
-
-- [ ] `AnalysisStrategy.java` – ממשק: `Object analyze(List<PageData> pages)`
-- [ ] `AbstractAnalysis.java` – מחלקה מופשטת (Template Method): `analyze()` קורא ל-`doAnalyze()`
-- [ ] `WordCountAnalysis.java` – סכום מילים בכל דפי HTTP 200
-- [ ] `MostLinkedDomainAnalysis.java` – דומיין עם הכי הרבה קישורים יוצאים אליו, שוויון = לקסיקוגרפי
-- [ ] `BrokenLinksAnalysis.java` – URLs עם סטטוס != 200, בסדר גילוי
-- [ ] `KeywordFrequencyAnalysis.java` – ספירת `java`, `thread`, `pattern` (case-insensitive)
-- [ ] `AverageWordCountAnalysis.java` – **(הרחבה)** ממוצע מילים לדף HTTP 200
-- [ ] `AnalysisFactory.java` – `createStrategy(String name)` מחזיר מימוש או null
+- [x] `CrawlConfig.java` – שדות `private final` + inner `Builder` עם כל ה-setters + `build()`
+- [x] `CliParser.java` – פרסור כל 7 הדגלים עם ולידציה מלאה:
+  - [x] `--analysis` – פיצול, סינון unknowns, יציאה אם ריק
+  - [x] `--poolsize` – בדיקת > 0
+  - [x] `--depth` – בדיקת >= 0
+  - [x] `--input` – בדיקת קיום קובץ
+  - [x] `--output` – שמירת נתיב
+  - [x] `--format` – ברירת מחדל `json`
+  - [x] `--domains` – פיצול לפי פסיק ל-Set
 
 ---
 
-## שלב 5 – כתיבת הפלט (Output Writers) 📄
+## Sprint 2 – Analysis + Infrastructure (מקביל)
 
-- [ ] `OutputWriter.java` – ממשק: `void write(CrawlResult result, String filePath)`
-- [ ] `JsonOutputWriter.java` – Jackson ObjectMapper, pretty-print, מבנה `pages` + `analysis`
-- [ ] `CsvOutputWriter.java` – **(הרחבה)** שורת header + שורה לכל דף + ניתוחים כ-key=value
-- [ ] `OutputWriterFactory.java` – `createWriter(String format)` מחזיר json/csv, ברירת מחדל json
+> שני branches רצים במקביל, כל אחד עושה review של השני לפני merge.
 
----
+### 🔵 אלכסיי – `feature/analysis-al`
 
-## שלב 6 – קריאת קלט (Input Readers) 📥
+- [ ] `analysis/AnalysisStrategy.java` – ממשק: `Object analyze(List<PageData>)`
+- [ ] `analysis/AbstractAnalysis.java` – Template Method: `analyze()` קורא ל-`doAnalyze()`
+- [ ] `analysis/WordCountAnalysis.java` – סכום מילים בדפי HTTP 200
+- [ ] `analysis/BrokenLinksAnalysis.java` – URLs עם status != 200, בסדר גילוי
+- [ ] `analysis/AnalysisFactory.java` – `createStrategy(String name)` → מימוש או null
 
-- [ ] `InputReader.java` – ממשק: `List<String> readSeeds()`
-- [ ] `FileInputReader.java` – קריאת שורות מקובץ, דילוג על שורות ריקות ו-`#`
-- [ ] `ConsoleInputReader.java` – **(הרחבה 4)** קריאת URLs משורת הפקודה (stdin)
+### 🟣 טליה – `feature/infrastructure-tb`
 
----
-
-## שלב 7 – סינון דומיינים (הרחבה) 🔍
-
-- [ ] `DomainFilter.java` – `isAllowed(String url, Set<String> allowed)`: אם הרשימה ריקה → הכל מותר, אחרת בדוק hostname
-
----
-
-## שלב 8 – Observer 👁️
-
-- [ ] `CrawlObserver.java` – ממשק: `void onPageCrawled(PageData page)`
-- [ ] `CrawlSubject.java` – ממשק: `void addObserver(CrawlObserver o)`, `void notifyObservers(PageData page)`
+- [ ] `output/OutputWriter.java` – ממשק: `void write(CrawlResult, String filePath)`
+- [ ] `output/JsonOutputWriter.java` – Jackson ObjectMapper, pretty-print, מבנה `pages` + `analysis`
+- [ ] `output/OutputWriterFactory.java` – `createWriter(String format)`, ברירת מחדל json
+- [ ] `input/InputReader.java` – ממשק: `List<String> readSeeds()`
+- [ ] `input/FileInputReader.java` – קריאת שורות, דילוג על ריקות ו-`#`
+- [ ] `observer/CrawlObserver.java` – ממשק: `void onPageCrawled(PageData)`
+- [ ] `observer/CrawlSubject.java` – ממשקים: `addObserver()`, `notifyObservers()`
+- [ ] `filter/DomainFilter.java` – `isAllowed(url, allowed)`: ריקה = הכל מותר
 
 ---
 
-## שלב 9 – שליפת דפים (Page Fetcher) 🌐
+## Sprint 3 – More Analyses + PageFetcher (מקביל)
 
-- [ ] `PageFetcher.java` – בניית חיבור Jsoup עם timeout=3000ms, followRedirects=true
-- [ ] שליפה ושמירת קוד סטטוס HTTP
-- [ ] חילוץ `<title>` (null אם לא HTTP 200)
-- [ ] ספירת מילים מ-`doc.body().text()` (0 אם לא HTTP 200)
-- [ ] חילוץ קישורים יוצאים `<a href>` כ-absolute URLs (0 אם לא HTTP 200)
-- [ ] חילוץ hostname מה-URL
-- [ ] טיפול בשגיאות: `MalformedURLException` → `<url> malformed` ל-stderr; `IOException` → `<url> failed` ל-stderr
-- [ ] **⚠️ לברר עם המרצה:** כתובות שחרגו מה-timeout – ה-PDF סותר את עצמו: עמוד 2 אומר `System.out`, סעיף שגיאות אומר `System.err`
+### 🔵 אלכסיי – `feature/analyses-ext-al`
 
----
+- [ ] `analysis/MostLinkedDomainAnalysis.java` – דומיין עם הכי הרבה קישורים, שוויון = לקסיקוגרפי
+- [ ] `analysis/KeywordFrequencyAnalysis.java` – ספירת `java`, `thread`, `pattern` (case-insensitive)
+- [ ] `analysis/AverageWordCountAnalysis.java` – **(הרחבה)** ממוצע מילים לדף HTTP 200
+- [ ] `output/CsvOutputWriter.java` – **(הרחבה)** header + שורה לכל דף + ניתוחים
 
-## שלב 10 – ליבת הסורק (Crawler Core) ⚙️
+### 🟣 טליה – `feature/page-fetcher-tb`
 
-- [ ] `WebCrawler.java` – שדות: `ExecutorService`, `ConcurrentHashMap<String,Integer> visited`, `AtomicInteger orderCounter`, `AtomicInteger pendingTasks`, `CountDownLatch`, `List<PageData> results` (synchronizedList)
-- [ ] `WebCrawler.crawl()` – טעינת זרעים, הגשת `CrawlTask` ראשוניות (increment pendingTasks לפני כל submit)
-- [ ] `WebCrawler.crawl()` – המתנה ל-`doneLatch.await()`
-- [ ] `WebCrawler.crawl()` – `pool.shutdown()` לאחר סיום
-- [ ] `CrawlTask.java` – בדיקה אטומית: `visited.putIfAbsent(url, order)`, אם כבר קיים – חזרה מיידית
-- [ ] `CrawlTask` – קריאה ל-`PageFetcher.fetch()`
-- [ ] `CrawlTask` – הכנסת `PageData` לרשימה **בסדר הגילוי** (לפי ה-order value)
-- [ ] `CrawlTask` – אם depth < maxDepth: submit של child tasks לכל קישור (אחרי DomainFilter)
-- [ ] `CrawlTask` – ב-finally: `pendingTasks.decrementAndGet()`, אם הגיע ל-0 → `doneLatch.countDown()`
-- [ ] `CrawlTask` – קריאה ל-`subject.notifyObservers(pageData)` לאחר שמירה
+- [ ] `crawler/PageFetcher.java`:
+  - [ ] Jsoup connection עם timeout=3000ms, followRedirects=true
+  - [ ] שמירת HTTP status code
+  - [ ] חילוץ `<title>` (ריק אם status != 200)
+  - [ ] ספירת מילים מ-`body().text()` (0 אם status != 200)
+  - [ ] חילוץ קישורים יוצאים `<a href>` כ-absolute URLs
+  - [ ] חילוץ hostname מה-URL
+  - [ ] `MalformedURLException` → `<url> malformed` ל-stderr
+  - [ ] `IOException` → `<url> failed` ל-stderr
+  - [ ] **⚠️ לברר עם המרצה:** timeout – System.out או System.err?
+- [ ] `input/ConsoleInputReader.java` – **(הרחבה)** קריאת URLs מ-stdin
 
 ---
 
-## שלב 11 – Main 🚀
+## Sprint 4 – Crawler Core (מקביל – API מוסכם מראש!)
 
-- [ ] `Main.java` – חיבור הכל: `CliParser` → `WebCrawler` → ניתוחים → `CrawlResult` → `OutputWriter`; טיפול ב-IOException עם `error saving report`
+> **לפני שמתחילים:** לשבת יחד ולהסכים:
+> - `WebCrawler` מחזיק: `pool`, `visited`, `results`, `pendingTasks`, `doneLatch`
+> - `CrawlTask` מקבל ב-constructor: `url`, `depth`, ref ל-`WebCrawler`
+
+### 🔵 אלכסיי – `feature/webcrawler-al`
+
+- [ ] `crawler/WebCrawler.java`:
+  - [ ] שדות: `ExecutorService pool`, `ConcurrentHashMap<String,Integer> visited`, `AtomicInteger orderCounter`, `AtomicInteger pendingTasks`, `CountDownLatch doneLatch`, `List<PageData> results` (synchronizedList)
+  - [ ] `crawl()` – טעינת זרעים, submit של `CrawlTask` ראשוניות (increment לפני submit)
+  - [ ] `crawl()` – `doneLatch.await()` + `pool.shutdown()`
+
+### 🟣 טליה – `feature/crawltask-tb`
+
+- [ ] `crawler/CrawlTask.java`:
+  - [ ] בדיקה אטומית: `visited.putIfAbsent(url, order)` – אם כבר קיים → return מיידי
+  - [ ] קריאה ל-`PageFetcher.fetch()`
+  - [ ] הכנסת `PageData` לרשימה בסדר גילוי (לפי order value)
+  - [ ] אם depth < maxDepth: submit child tasks (אחרי DomainFilter)
+  - [ ] `finally`: `pendingTasks.decrementAndGet()`, אם הגיע ל-0 → `doneLatch.countDown()`
+  - [ ] קריאה ל-`subject.notifyObservers(pageData)`
 
 ---
 
-## שלב 12 – בדיקות והגשה ✅
+## Sprint 5 – Integration & Docs (שניהם)
 
-- [ ] יצירת `seeds.txt` עם לפחות 5 URLs שיניבו **100+ דפים בסך הכל** (לאו דווקא בעומק 2 בלבד)
-- [ ] בדיקה עם `poolSize=1`
-- [ ] בדיקה עם `poolSize=4`
-- [ ] בדיקה עם `depth=0`
-- [ ] בדיקה עם `depth=2`
-- [ ] בדיקה עם URLs כפולים בקובץ הזרעים
-- [ ] בדיקה עם מעגלים (cycles) – וידוא שלא נתקעים
-- [ ] עדכון `README.md` עם מיילים אמיתיים של הסטודנטים בפורמט `edu.jmc.ac.il` (**חובה! מייל חסר/שגוי = -5 נקודות**)
-- [ ] יצירת git branch `feature/implementation`
-- [ ] commits משמעותיים לאורך הפיתוח
-- [ ] merge חזרה ל-`main` (**לא למחוק את ה-branch לפני ההגשה!**)
+### 🔵 אלכסיי – `feature/main-al`
+
+- [ ] `Main.java` – חיבור הכל: `CliParser` → `InputReader` → `WebCrawler` → ניתוחים → `CrawlResult` → `OutputWriter`
+  - [ ] טיפול ב-`IOException` עם `error saving report`
+- [ ] `seeds.txt` – 5+ URLs שיניבו **100+ דפים בסך הכל**
+
+### 🟣 טליה – `feature/docs-tb`
+
+- [ ] `README.md`:
+  - [ ] מיילים בפורמט `edu.jmc.ac.il` (**חובה! מייל חסר = -5 נקודות**)
+  - [ ] הוראות קומפילציה מדויקות
+  - [ ] הוראות הרצה מדויקות
+  - [ ] רשימת Design Patterns בשימוש
+  - [ ] רשימת הרחבות שמומשו
+- [ ] בדיקות:
+  - [ ] `poolSize=1`
+  - [ ] `poolSize=4`
+  - [ ] `depth=0`
+  - [ ] `depth=2`
+  - [ ] URLs כפולים בזרעים
+  - [ ] מעגלים (cycles) – לא נתקעים
+  - [ ] לפחות 100 דפים בסך הכל
+
+---
+
+## Git – דרישות הגשה
+
+- [ ] commits משמעותיים לאורך כל הפיתוח
+- [ ] לפחות branch אחד עם merge (**לא למחוק branches לפני ההגשה!**)
+- branches שנוצרו עד כה: `feature/cli-complete` ✅
 
 ---
 
 ## סיכום התקדמות
 
-| שלב | כמה משימות | הושלמו |
-|-----|-----------|--------|
-| 1 – Maven | 5 | 5 ✅ |
-| 2 – מודל נתונים | 2 | 2 ✅ |
-| 3 – CLI | 9 | 2 |
-| 4 – ניתוחים | 8 | 0 |
-| 5 – פלט | 4 | 0 |
-| 6 – קלט | 3 | 0 |
-| 7 – סינון | 1 | 0 |
-| 8 – Observer | 2 | 0 |
-| 9 – Page Fetcher | 8 | 0 |
-| 10 – Crawler Core | 10 | 0 |
-| 11 – Main | 1 | 0 |
-| 12 – בדיקות | 9 | 0 |
-| **סה"כ** | **61** | **7** |
+| ספרינט | אחראי | משימות | הושלמו |
+|--------|-------|--------|--------|
+| בסיס (Maven + מודל) | שניהם | 4 | 4 ✅ |
+| Sprint 1 – CLI | אלכסיי | 9 | 9 ✅ |
+| Sprint 2 – Analysis | אלכסיי | 5 | 0 |
+| Sprint 2 – Infrastructure | טליה | 8 | 0 |
+| Sprint 3 – Analyses ext | אלכסיי | 4 | 0 |
+| Sprint 3 – PageFetcher | טליה | 10 | 0 |
+| Sprint 4 – WebCrawler | אלכסיי | 3 | 0 |
+| Sprint 4 – CrawlTask | טליה | 6 | 0 |
+| Sprint 5 – Main | אלכסיי | 3 | 0 |
+| Sprint 5 – Docs & Tests | טליה | 10 | 0 |
+| **סה"כ** | | **62** | **13** |
