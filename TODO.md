@@ -24,14 +24,16 @@
 
 ## שלב 3 – פרסור שורת הפקודה (CLI) ⌨️
 
-- [ ] `CrawlConfig.java` – כל השדות כ-`private final`
-- [ ] `CrawlConfig.Builder` – inner class עם setters ו-`build()`
-- [ ] `CliParser.java` – פרסור `--analysis`, ולידציה, הודעת `<name> is unknown`, יציאה אם אין תקף
-- [ ] `CliParser` – פרסור `--poolsize`, ולידציה > 0, הודעת `invalid pool size`
-- [ ] `CliParser` – פרסור `--depth`, ולידציה >= 0, הודעת `invalid depth`
-- [ ] `CliParser` – פרסור `--input`, בדיקת קריאות, הודעת `invalid input file`
-- [ ] `CliParser` – פרסור `--output` (שמירת הנתיב בלבד)
-- [ ] `CliParser` – פרסור אופציונלי `--format` (ברירת מחדל `json`) ו-`--domains`
+- [x] `CrawlConfig.java` – כל השדות כ-`private final`
+- [x] `CrawlConfig.Builder` – inner class עם setters ו-`build()`
+- [ ] `CliParser.java` – **בתהליך** – שלד + Javadoc נכתב; נשאר למלא את ה-`switch`:
+  - [ ] `--analysis` – פיצול לפי פסיק, סינון unknowns, יציאה אם אין תקף
+  - [ ] `--poolsize` – parseInt, בדיקת > 0, הודעת `invalid pool size`
+  - [ ] `--depth` – parseInt, בדיקת >= 0, הודעת `invalid depth`
+  - [ ] `--input` – בדיקת קיום קובץ, הודעת `invalid input file`
+  - [ ] `--output` – שמירת הנתיב בלבד
+  - [ ] `--format` – שמירת פורמט (אופציונלי, ברירת מחדל `json`)
+  - [ ] `--domains` – פיצול לפי פסיק ל-Set (אופציונלי)
 
 ---
 
@@ -134,7 +136,7 @@
 |-----|-----------|--------|
 | 1 – Maven | 5 | 5 ✅ |
 | 2 – מודל נתונים | 2 | 2 ✅ |
-| 3 – CLI | 8 | 0 |
+| 3 – CLI | 9 | 2 |
 | 4 – ניתוחים | 8 | 0 |
 | 5 – פלט | 4 | 0 |
 | 6 – קלט | 3 | 0 |
