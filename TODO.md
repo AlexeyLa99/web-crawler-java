@@ -45,14 +45,14 @@
 
 ### 🟣 טליה – `feature/infrastructure-tb`
 
-- [ ] `output/OutputWriter.java` – ממשק: `void write(CrawlResult, String filePath)`
-- [ ] `output/JsonOutputWriter.java` – Jackson ObjectMapper, pretty-print, מבנה `pages` + `analysis`
-- [ ] `output/OutputWriterFactory.java` – `createWriter(String format)`, ברירת מחדל json
-- [ ] `input/InputReader.java` – ממשק: `List<String> readSeeds()`
-- [ ] `input/FileInputReader.java` – קריאת שורות, דילוג על ריקות ו-`#`
-- [ ] `observer/CrawlObserver.java` – ממשק: `void onPageCrawled(PageData)`
-- [ ] `observer/CrawlSubject.java` – ממשקים: `addObserver()`, `notifyObservers()`
-- [ ] `filter/DomainFilter.java` – `isAllowed(url, allowed)`: ריקה = הכל מותר
+- [x] `output/OutputWriter.java` – ממשק: `void write(CrawlResult, String filePath)`
+- [x] `output/JsonOutputWriter.java` – Jackson ObjectMapper, pretty-print, מבנה `pages` + `analysis`
+- [x] `output/OutputWriterFactory.java` – `createWriter(String format)`, ברירת מחדל json
+- [x] `input/InputReader.java` – ממשק: `List<String> readSeeds()`
+- [x] `input/FileInputReader.java` – קריאת שורות, דילוג על ריקות ו-`#`
+- [x] `observer/CrawlObserver.java` – ממשק: `void onPageCrawled(PageData)`
+- [x] `observer/CrawlSubject.java` – ממשקים: `addObserver()`, `notifyObservers()`
+- [x] `filter/DomainFilter.java` – `isAllowed(url, allowed)`: ריקה = הכל מותר
 
 ---
 
@@ -148,11 +148,11 @@
 | בסיס (Maven + מודל) | שניהם | 4 | 4 ✅ |
 | Sprint 1 – CLI | אלכסיי | 9 | 9 ✅ |
 | Sprint 2 – Analysis | אלכסיי | 5 | 0 |
-| Sprint 2 – Infrastructure | טליה | 8 | 0 |
+| Sprint 2 – Infrastructure | טליה | 8 | 8 ✅ |
 | Sprint 3 – Analyses ext | אלכסיי | 4 | 0 |
 | Sprint 3 – PageFetcher | טליה | 10 | 0 |
 | Sprint 4 – WebCrawler | אלכסיי | 3 | 0 |
 | Sprint 4 – CrawlTask | טליה | 6 | 0 |
 | Sprint 5 – Main | אלכסיי | 3 | 0 |
 | Sprint 5 – Docs & Tests | טליה | 10 | 0 |
-| **סה"כ** | | **62** | **13** |
+| **סה"כ** | | **62** | **21** |
