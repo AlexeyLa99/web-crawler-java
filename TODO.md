@@ -10,7 +10,7 @@
 
 - [x] יצירת `pom.xml` עם Java 25, Jsoup 1.18.3, Jackson 2.17.2, maven-assembly-plugin
 - [x] יצירת עץ תיקיות `src/main/java/webcrawler/{cli,crawler,analysis,output,input,filter,observer,result}`
-- [x] `PageData.java` – url, title, bodyText, wordCount, outgoingLinks, domain, status, depth
+- [x] `PageData.java` – url, title, wordCount, outgoingLinks, domain, status, depth
 - [x] `CrawlResult.java` – מחזיק `List<PageData>` + `Map<String,Object>`
 
 ---
@@ -31,11 +31,11 @@
 
 ---
 
-## ✅ Sprint 2 – Analysis + Infrastructure (מוזג ל-main)
+## Sprint 2 – Analysis + Infrastructure (מקביל)
 
 > שני branches רצים במקביל, כל אחד עושה review של השני לפני merge.
 
-### 🔵 אלכסיי – `feature/analysis-al` ✅
+### 🔵 אלכסיי – `feature/analysis-al`
 
 - [x] `analysis/AnalysisStrategy.java` – ממשק: `Object analyze(List<PageData>)`
 - [x] `analysis/AbstractAnalysis.java` – Template Method: `analyze()` קורא ל-`doAnalyze()`
@@ -56,16 +56,16 @@
 
 ---
 
-## Sprint 3 – More Analyses + PageFetcher
+## Sprint 3 – More Analyses + PageFetcher (מקביל)
 
-### 🔵 אלכסיי – `feature/analyses-ext-al` ✅ (PR #1)
+### 🔵 אלכסיי – `feature/analyses-ext-al`
 
 - [x] `analysis/MostLinkedDomainAnalysis.java` – דומיין עם הכי הרבה קישורים, שוויון = לקסיקוגרפי
 - [x] `analysis/KeywordFrequencyAnalysis.java` – ספירת `java`, `thread`, `pattern` (case-insensitive)
 - [x] `analysis/AverageWordCountAnalysis.java` – **(הרחבה)** ממוצע מילים לדף HTTP 200
 - [x] `output/CsvOutputWriter.java` – **(הרחבה)** header + שורה לכל דף + ניתוחים
 
-### 🟣 טליה – `feature/page-fetcher-tb` ✅
+### 🟣 טליה – `feature/page-fetcher-tb`
 
 - [x] `crawler/PageFetcher.java`:
   - [x] Jsoup connection עם timeout=3000ms, followRedirects=true
@@ -74,9 +74,8 @@
   - [x] ספירת מילים מ-`body().text()` (0 אם status != 200)
   - [x] חילוץ קישורים יוצאים `<a href>` כ-absolute URLs
   - [x] חילוץ hostname מה-URL
-  - [x] URL לא תקין / לא http(s) → `<url> malformed` ל-stderr (מקביל ל-MalformedURLException)
+  - [x] `MalformedURLException` → `<url> malformed` ל-stderr
   - [x] `IOException` → `<url> failed` ל-stderr
-  - [x] **⚠️ לברר עם המרצה:** timeout – System.out או System.err? (כרגע: כמו שאר כשלי רשת → stderr)
 - [x] `input/ConsoleInputReader.java` – **(הרחבה)** קריאת URLs מ-stdin
 
 ---
@@ -136,8 +135,8 @@
 ## Git – דרישות הגשה
 
 - [ ] commits משמעותיים לאורך כל הפיתוח
-- [x] לפחות branch אחד עם merge (**לא למחוק branches לפני ההגשה!**) – `feature/analyses-ext-al` → `main` (PR #1)
-- branches שנוצרו עד כה: `feature/cli-complete` ✅ | `feature/analyses-ext-al` ✅ (merged)
+- [ ] לפחות branch אחד עם merge (**לא למחוק branches לפני ההגשה!**)
+- branches שנוצרו עד כה: `feature/cli-complete` ✅
 
 ---
 
@@ -150,9 +149,9 @@
 | Sprint 2 – Analysis | אלכסיי | 5 | 5 ✅ |
 | Sprint 2 – Infrastructure | טליה | 8 | 8 ✅ |
 | Sprint 3 – Analyses ext | אלכסיי | 4 | 4 ✅ |
-| Sprint 3 – PageFetcher | טליה | 10 | 10 ✅ |
+| Sprint 3 – PageFetcher | טליה | 9 | 9 ✅ |
 | Sprint 4 – WebCrawler | אלכסיי | 3 | 0 |
 | Sprint 4 – CrawlTask | טליה | 6 | 0 |
 | Sprint 5 – Main | אלכסיי | 3 | 0 |
 | Sprint 5 – Docs & Tests | טליה | 10 | 0 |
-| **סה"כ** | | **62** | **40** |
+| **סה"כ** | | **61** | **39** |
