@@ -20,10 +20,9 @@ public final class OutputWriterFactory {
         }
 
         String normalized = format.trim().toLowerCase();
-        if ("json".equals(normalized)) {
-            return new JsonOutputWriter();
-        }
-
-        return new JsonOutputWriter();
+        return switch (normalized) {
+            case "csv"  -> new CsvOutputWriter();
+            default     -> new JsonOutputWriter();
+        };
     }
 }
