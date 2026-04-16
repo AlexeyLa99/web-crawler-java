@@ -21,9 +21,12 @@ public final class AnalysisFactory {
             return null;
         }
         return switch (name.trim().toUpperCase()) {
-            case "WORD_COUNT"    -> new WordCountAnalysis();
-            case "BROKEN_LINKS" -> new BrokenLinksAnalysis();
-            default             -> null;
+            case "WORD_COUNT"          -> new WordCountAnalysis();
+            case "BROKEN_LINKS"        -> new BrokenLinksAnalysis();
+            case "MOST_LINKED_DOMAIN"  -> new MostLinkedDomainAnalysis();
+            case "KEYWORD_FREQUENCY"   -> new KeywordFrequencyAnalysis();
+            case "AVERAGE_WORD_COUNT"  -> new AverageWordCountAnalysis();
+            default                    -> null;
         };
     }
 }
