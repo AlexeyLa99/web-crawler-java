@@ -1,4 +1,4 @@
-# רשימת משימות – EX1 Concurrent WebCrawler
+﻿# רשימת משימות – EX1 Concurrent WebCrawler
 
 > **סמלים:** ✅ הושלם | 🔵 A = אלכסיי | 🟣 T = טליה
 > כל branch נסגר עם PR review של הצד השני לפני merge.
@@ -88,10 +88,10 @@
 
 ### 🔵 אלכסיי – `feature/webcrawler-al`
 
-- [ ] `crawler/WebCrawler.java`:
-  - [ ] שדות: `ExecutorService pool`, `ConcurrentHashMap<String,Integer> visited`, `AtomicInteger orderCounter`, `AtomicInteger pendingTasks`, `CountDownLatch doneLatch`, `List<PageData> results` (synchronizedList)
-  - [ ] `crawl()` – טעינת זרעים, submit של `CrawlTask` ראשוניות (increment לפני submit)
-  - [ ] `crawl()` – `doneLatch.await()` + `pool.shutdown()`
+- [x] `crawler/WebCrawler.java`:
+  - [x] שדות: `ExecutorService pool`, `ConcurrentHashMap<String,Integer> visited`, `AtomicInteger orderCounter`, `AtomicInteger pendingTasks`, `CountDownLatch doneLatch`, `List<PageData> results` (synchronizedList)
+  - [x] `crawl()` – טעינת זרעים, submit של `CrawlTask` ראשוניות (increment לפני submit)
+  - [x] `crawl()` – `doneLatch.await()` + `pool.shutdown()`
 
 ### 🟣 טליה – `feature/crawltask-tb`
 
@@ -150,8 +150,8 @@
 | Sprint 2 – Infrastructure | טליה | 8 | 8 ✅ |
 | Sprint 3 – Analyses ext | אלכסיי | 4 | 4 ✅ |
 | Sprint 3 – PageFetcher | טליה | 9 | 9 ✅ |
-| Sprint 4 – WebCrawler | אלכסיי | 3 | 0 |
+| Sprint 4 – WebCrawler | אלכסיי | 3 | 3 ✅ |
 | Sprint 4 – CrawlTask | טליה | 6 | 0 |
 | Sprint 5 – Main | אלכסיי | 3 | 0 |
 | Sprint 5 – Docs & Tests | טליה | 10 | 0 |
-| **סה"כ** | | **61** | **39** |
+| **סה"כ** | | **61** | **42** |
