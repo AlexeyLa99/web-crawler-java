@@ -1,4 +1,4 @@
-# רשימת משימות – EX1 Concurrent WebCrawler
+﻿# רשימת משימות – EX1 Concurrent WebCrawler
 
 > **סמלים:** ✅ הושלם | 🔵 A = אלכסיי | 🟣 T = טליה
 > כל branch נסגר עם PR review של הצד השני לפני merge.
@@ -10,7 +10,7 @@
 
 - [x] יצירת `pom.xml` עם Java 25, Jsoup 1.18.3, Jackson 2.17.2, maven-assembly-plugin
 - [x] יצירת עץ תיקיות `src/main/java/webcrawler/{cli,crawler,analysis,output,input,filter,observer,result}`
-- [x] `PageData.java` – url, title, bodyText, wordCount, outgoingLinks, domain, status, depth
+- [x] `PageData.java` – url, title, wordCount, outgoingLinks, domain, status, depth
 - [x] `CrawlResult.java` – מחזיק `List<PageData>` + `Map<String,Object>`
 
 ---
@@ -31,11 +31,11 @@
 
 ---
 
-## ✅ Sprint 2 – Analysis + Infrastructure (מוזג ל-main)
+## Sprint 2 – Analysis + Infrastructure (מקביל)
 
 > שני branches רצים במקביל, כל אחד עושה review של השני לפני merge.
 
-### 🔵 אלכסיי – `feature/analysis-al` ✅
+### 🔵 אלכסיי – `feature/analysis-al`
 
 - [x] `analysis/AnalysisStrategy.java` – ממשק: `Object analyze(List<PageData>)`
 - [x] `analysis/AbstractAnalysis.java` – Template Method: `analyze()` קורא ל-`doAnalyze()`
@@ -56,16 +56,16 @@
 
 ---
 
-## Sprint 3 – More Analyses + PageFetcher
+## Sprint 3 – More Analyses + PageFetcher (מקביל)
 
-### 🔵 אלכסיי – `feature/analyses-ext-al` ✅ (PR #1)
+### 🔵 אלכסיי – `feature/analyses-ext-al`
 
 - [x] `analysis/MostLinkedDomainAnalysis.java` – דומיין עם הכי הרבה קישורים, שוויון = לקסיקוגרפי
 - [x] `analysis/KeywordFrequencyAnalysis.java` – ספירת `java`, `thread`, `pattern` (case-insensitive)
 - [x] `analysis/AverageWordCountAnalysis.java` – **(הרחבה)** ממוצע מילים לדף HTTP 200
 - [x] `output/CsvOutputWriter.java` – **(הרחבה)** header + שורה לכל דף + ניתוחים
 
-### 🟣 טליה – `feature/page-fetcher-tb` ✅
+### 🟣 טליה – `feature/page-fetcher-tb`
 
 - [x] `crawler/PageFetcher.java`:
   - [x] Jsoup connection עם timeout=3000ms, followRedirects=true
@@ -74,9 +74,8 @@
   - [x] ספירת מילים מ-`body().text()` (0 אם status != 200)
   - [x] חילוץ קישורים יוצאים `<a href>` כ-absolute URLs
   - [x] חילוץ hostname מה-URL
-  - [x] URL לא תקין / לא http(s) → `<url> malformed` ל-stderr (מקביל ל-MalformedURLException)
+  - [x] `MalformedURLException` → `<url> malformed` ל-stderr
   - [x] `IOException` → `<url> failed` ל-stderr
-  - [x] **⚠️ לברר עם המרצה:** timeout – System.out או System.err? (כרגע: כמו שאר כשלי רשת → stderr)
 - [x] `input/ConsoleInputReader.java` – **(הרחבה)** קריאת URLs מ-stdin
 
 ---
@@ -89,20 +88,20 @@
 
 ### 🔵 אלכסיי – `feature/webcrawler-al`
 
-- [ ] `crawler/WebCrawler.java`:
-  - [ ] שדות: `ExecutorService pool`, `ConcurrentHashMap<String,Integer> visited`, `AtomicInteger orderCounter`, `AtomicInteger pendingTasks`, `CountDownLatch doneLatch`, `List<PageData> results` (synchronizedList)
-  - [ ] `crawl()` – טעינת זרעים, submit של `CrawlTask` ראשוניות (increment לפני submit)
-  - [ ] `crawl()` – `doneLatch.await()` + `pool.shutdown()`
+- [x] `crawler/WebCrawler.java`:
+  - [x] שדות: `ExecutorService pool`, `ConcurrentHashMap<String,Integer> visited`, `AtomicInteger orderCounter`, `AtomicInteger pendingTasks`, `CountDownLatch doneLatch`, `List<PageData> results` (synchronizedList)
+  - [x] `crawl()` – טעינת זרעים, submit של `CrawlTask` ראשוניות (increment לפני submit)
+  - [x] `crawl()` – `doneLatch.await()` + `pool.shutdown()`
 
-### 🟣 טליה – `feature/crawltask-tb`
+### 🟣 טליה – `feature/crawltask-tb` ✅ (מוזג ל-`main` ב-PR #3)
 
-- [ ] `crawler/CrawlTask.java`:
-  - [ ] בדיקה אטומית: `visited.putIfAbsent(url, order)` – אם כבר קיים → return מיידי
-  - [ ] קריאה ל-`PageFetcher.fetch()`
-  - [ ] הכנסת `PageData` לרשימה בסדר גילוי (לפי order value)
-  - [ ] אם depth < maxDepth: submit child tasks (אחרי DomainFilter)
-  - [ ] `finally`: `pendingTasks.decrementAndGet()`, אם הגיע ל-0 → `doneLatch.countDown()`
-  - [ ] קריאה ל-`subject.notifyObservers(pageData)`
+- [x] `crawler/CrawlTask.java`:
+  - [x] בדיקה אטומית: `visited.putIfAbsent(url, order)` – אם כבר קיים → return מיידי
+  - [x] קריאה ל-`PageFetcher.fetch()`
+  - [x] הכנסת `PageData` לרשימה בסדר גילוי (לפי order value)
+  - [x] אם depth < maxDepth: submit child tasks (אחרי DomainFilter)
+  - [x] `finally`: `pendingTasks.decrementAndGet()`, אם הגיע ל-0 → `doneLatch.countDown()`
+  - [x] קריאה ל-`subject.notifyObservers(pageData)`
 
 ---
 
@@ -110,18 +109,18 @@
 
 ### 🔵 אלכסיי – `feature/main-al`
 
-- [ ] `Main.java` – חיבור הכל: `CliParser` → `InputReader` → `WebCrawler` → ניתוחים → `CrawlResult` → `OutputWriter`
-  - [ ] טיפול ב-`IOException` עם `error saving report`
-- [ ] `seeds.txt` – 5+ URLs שיניבו **100+ דפים בסך הכל**
+- [x] `Main.java` – חיבור הכל: `CliParser` → `InputReader` → `WebCrawler` → ניתוחים → `CrawlResult` → `OutputWriter`
+  - [x] טיפול ב-`IOException` עם `error saving report`
+- [x] `seeds.txt` – 5+ URLs שיניבו **100+ דפים בסך הכל**
 
 ### 🟣 טליה – `feature/docs-tb`
 
-- [ ] `README.md`:
-  - [ ] מיילים בפורמט `edu.jmc.ac.il` (**חובה! מייל חסר = -5 נקודות**)
-  - [ ] הוראות קומפילציה מדויקות
-  - [ ] הוראות הרצה מדויקות
-  - [ ] רשימת Design Patterns בשימוש
-  - [ ] רשימת הרחבות שמומשו
+- [x] `README.md`:
+  - [x] מיילים בפורמט `edu.jmc.ac.il` (**חובה! מייל חסר = -5 נקודות**)
+  - [x] הוראות קומפילציה מדויקות
+  - [x] הוראות הרצה מדויקות
+  - [x] רשימת Design Patterns בשימוש
+  - [x] רשימת הרחבות שמומשו
 - [ ] בדיקות:
   - [ ] `poolSize=1`
   - [ ] `poolSize=4`
@@ -137,7 +136,7 @@
 
 - [ ] commits משמעותיים לאורך כל הפיתוח
 - [x] לפחות branch אחד עם merge (**לא למחוק branches לפני ההגשה!**) – `feature/analyses-ext-al` → `main` (PR #1)
-- branches שנוצרו עד כה: `feature/cli-complete` ✅ | `feature/analyses-ext-al` ✅ (merged)
+- branches שנוצרו עד כה: `feature/cli-complete` ✅ | `feature/analyses-ext-al` ✅ (merged) | `feature/page-fetcher-tb` ✅ (merged PR #2) | `feature/crawltask-tb` ✅ (merged PR #3) | `feature/webcrawler-al` ✅
 
 ---
 
@@ -151,8 +150,8 @@
 | Sprint 2 – Infrastructure | טליה | 8 | 8 ✅ |
 | Sprint 3 – Analyses ext | אלכסיי | 4 | 4 ✅ |
 | Sprint 3 – PageFetcher | טליה | 10 | 10 ✅ |
-| Sprint 4 – WebCrawler | אלכסיי | 3 | 0 |
-| Sprint 4 – CrawlTask | טליה | 6 | 0 |
-| Sprint 5 – Main | אלכסיי | 3 | 0 |
-| Sprint 5 – Docs & Tests | טליה | 10 | 0 |
-| **סה"כ** | | **62** | **40** |
+| Sprint 4 – WebCrawler | אלכסיי | 3 | 3 ✅ |
+| Sprint 4 – CrawlTask | טליה | 6 | 6 ✅ |
+| Sprint 5 – Main | אלכסיי | 3 | 3 ✅ |
+| Sprint 5 – Docs & Tests | טליה | 10 | 6 (README מלא; בדיקות ידניות נשארות) |
+| **סה"כ** | | **62** | **58** |

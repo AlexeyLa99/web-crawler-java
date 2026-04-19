@@ -32,7 +32,11 @@ public class CliParser {
      * Any name not in this set is rejected with "{@code <name> is unknown}".
      */
     private static final Set<String> KNOWN_ANALYSES = Set.of(
-        "WORD_COUNT", "MOST_LINKED_DOMAIN", "BROKEN_LINKS", "KEYWORD_FREQUENCY"
+        "WORD_COUNT",
+        "MOST_LINKED_DOMAIN",
+        "BROKEN_LINKS",
+        "KEYWORD_FREQUENCY",
+        "AVERAGE_WORD_COUNT"
     );
 
     /**
@@ -71,7 +75,13 @@ public class CliParser {
                     builder.analyses(valid);
                 }
                 case "--poolsize" -> {
-                    int n = Integer.parseInt(value);
+                    int n;
+                    try {
+                        n = Integer.parseInt(value);
+                    } catch (NumberFormatException e) {
+                        System.err.println("invalid pool size");
+                        System.exit(1);
+                    }
                     if (n <= 0) {
                         System.err.println("invalid pool size");
                         System.exit(1);
@@ -79,7 +89,13 @@ public class CliParser {
                     builder.poolSize(n);
                 }
                 case "--depth" -> {
-                    int d = Integer.parseInt(value);
+                    int d;
+                    try {
+                        d = Integer.parseInt(value);
+                    } catch (NumberFormatException e) {
+                        System.err.println("invalid depth");
+                        System.exit(1);
+                    }
                     if (d < 0) {
                         System.err.println("invalid depth");
                         System.exit(1);
@@ -87,7 +103,7 @@ public class CliParser {
                     builder.maxDepth(d);
                 }
                 case "--input" -> {
-                    if (!new File(value).exists()) {
+                    if (!"-".equals(value) && !new File(value).exists()) {
                         System.err.println("invalid input file");
                         System.exit(1);
                     }
