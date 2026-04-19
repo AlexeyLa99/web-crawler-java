@@ -1,5 +1,8 @@
 package webcrawler.result;
 
+import java.util.Collections;
+import java.util.List;
+
 /**
  * Holds all data collected from a single crawled web page.
  *
@@ -15,7 +18,7 @@ public class PageData {
     private final String title;
     private final String bodyText;
     private final int wordCount;
-    private final int outgoingLinks;
+    private final List<String> outgoingLinkUrls;
     private final String domain;
     private final int status;
     private final int depth;
@@ -23,22 +26,24 @@ public class PageData {
     /**
      * Constructs a {@code PageData} record.
      *
-     * @param url           the absolute URL of the page
-     * @param title         the page {@code <title>}, or {@code null} when status != 200
-     * @param bodyText      the visible body text (empty string when status != 200)
-     * @param wordCount     number of words in the visible body text (0 when status != 200)
-     * @param outgoingLinks number of absolute {@code <a href>} links found (0 when status != 200)
-     * @param domain        the hostname extracted from {@code url}
-     * @param status        the HTTP response status code
-     * @param depth         the crawl depth at which this page was discovered (root = 0)
+     * @param url              the absolute URL of the page
+     * @param title            the page {@code <title>}, or {@code null} when status != 200
+     * @param bodyText         the visible body text (empty string when status != 200)
+     * @param wordCount        number of words in the visible body text (0 when status != 200)
+     * @param outgoingLinkUrls absolute {@code <a href>} URLs found (empty when status != 200)
+     * @param domain           the hostname extracted from {@code url}
+     * @param status           the HTTP response status code
+     * @param depth            the crawl depth at which this page was discovered (root = 0)
      */
     public PageData(String url, String title, String bodyText, int wordCount,
-                    int outgoingLinks, String domain, int status, int depth) {
+                    List<String> outgoingLinkUrls, String domain, int status, int depth) {
         this.url = url;
         this.title = title;
         this.bodyText = bodyText != null ? bodyText : "";
         this.wordCount = wordCount;
-        this.outgoingLinks = outgoingLinks;
+        this.outgoingLinkUrls = outgoingLinkUrls != null
+                ? Collections.unmodifiableList(outgoingLinkUrls)
+                : Collections.emptyList();
         this.domain = domain;
         this.status = status;
         this.depth = depth;
@@ -57,7 +62,10 @@ public class PageData {
     public int getWordCount()       { return wordCount; }
 
     /** @return the number of outgoing links found on this page */
-    public int getOutgoingLinks()   { return outgoingLinks; }
+    public int getOutgoingLinks()   { return outgoingLinkUrls.size(); }
+
+    /** @return the absolute URLs of outgoing links found on this page */
+    public List<String> getOutgoingLinkUrls() { return outgoingLinkUrls; }
 
     /** @return the hostname (domain) of this page's URL */
     public String getDomain()       { return domain; }

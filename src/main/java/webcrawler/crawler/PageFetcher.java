@@ -3,7 +3,9 @@ package webcrawler.crawler;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import org.jsoup.Connection;
@@ -38,7 +40,7 @@ public final class PageFetcher {
         String trimmed = url == null ? "" : url.trim();
         if (trimmed.isEmpty()) {
             System.err.println(" malformed");
-            return new PageData("", null, "", 0, 0, "", 0, depth);
+            return new PageData("", null, "", 0, null, "", 0, depth);
         }
 
         URI uri;
@@ -46,19 +48,19 @@ public final class PageFetcher {
             uri = new URI(trimmed);
         } catch (URISyntaxException e) {
             System.err.println(trimmed + " malformed");
-            return new PageData(trimmed, null, "", 0, 0, "", 0, depth);
+            return new PageData(trimmed, null, "", 0, null, "", 0, depth);
         }
 
         String scheme = uri.getScheme();
         if (scheme == null || (!scheme.equalsIgnoreCase("http") && !scheme.equalsIgnoreCase("https"))) {
             System.err.println(trimmed + " malformed");
-            return new PageData(trimmed, null, "", 0, 0, "", 0, depth);
+            return new PageData(trimmed, null, "", 0, null, "", 0, depth);
         }
 
         String domain = hostOf(trimmed);
         if (domain.isEmpty()) {
             System.err.println(trimmed + " malformed");
-            return new PageData(trimmed, null, "", 0, 0, "", 0, depth);
+            return new PageData(trimmed, null, "", 0, null, "", 0, depth);
         }
 
         try {
@@ -72,14 +74,15 @@ public final class PageFetcher {
             Document doc = response.parse();
 
             if (status != 200) {
-                return new PageData(trimmed, null, "", 0, 0, domain, status, depth);
+                return new PageData(trimmed, null, "", 0, null, domain, status, depth);
             }
 
             String title = emptyToNull(doc.title());
             String bodyText = doc.body() != null ? doc.body().text() : "";
             int wordCount = countWords(bodyText);
 
-            Set<String> outgoing = new HashSet<>();
+            Set<String> seen = new HashSet<>();
+            List<String> outgoing = new ArrayList<>();
             Elements anchors = doc.select("a[href]");
             for (Element a : anchors) {
                 String abs = a.attr("abs:href");
@@ -94,7 +97,9 @@ public final class PageFetcher {
                     String linkScheme = linkUri.getScheme();
                     if (linkScheme != null
                             && (linkScheme.equalsIgnoreCase("http") || linkScheme.equalsIgnoreCase("https"))) {
-                        outgoing.add(linkUri.toString());
+                        if (seen.add(linkUri.toString())) {
+                            outgoing.add(linkUri.toString());
+                        }
                     }
                 } catch (URISyntaxException ignored) {
                     // skip invalid links
@@ -106,16 +111,16 @@ public final class PageFetcher {
                     title,
                     bodyText,
                     wordCount,
-                    outgoing.size(),
+                    outgoing,
                     domain,
                     status,
                     depth);
         } catch (IllegalArgumentException e) {
             System.err.println(trimmed + " malformed");
-            return new PageData(trimmed, null, "", 0, 0, domain, 0, depth);
+            return new PageData(trimmed, null, "", 0, null, domain, 0, depth);
         } catch (IOException e) {
             System.err.println(trimmed + " failed");
-            return new PageData(trimmed, null, "", 0, 0, domain, 0, depth);
+            return new PageData(trimmed, null, "", 0, null, domain, 0, depth);
         }
     }
 
