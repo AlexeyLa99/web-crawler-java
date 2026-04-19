@@ -1,0 +1,9 @@
+# Seed URLs for EX1 crawler (one per line). Lines starting with # are ignored.
+# Tune depth/pool for your machine; Wikipedia yields many pages at depth >= 2.
+
+https://en.wikipedia.org/wiki/Main_Page
+https://en.wikipedia.org/wiki/Web_crawler
+https://www.wikipedia.org/
+https://example.com/
+https://httpbin.org/
+https://www.w3.org/

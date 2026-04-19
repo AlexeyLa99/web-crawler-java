@@ -21,10 +21,21 @@ This produces `target/ex1-1.0-jar-with-dependencies.jar`.
 
 ```bash
 java -jar target/ex1-1.0-jar-with-dependencies.jar \
-  --analysis WORD_COUNT,BROKEN_LINKS,MOST_LINKED_DOMAIN,KEYWORD_FREQUENCY \
+  --analysis WORD_COUNT,BROKEN_LINKS,MOST_LINKED_DOMAIN,KEYWORD_FREQUENCY,AVERAGE_WORD_COUNT \
   --poolsize 4 \
   --depth 2 \
   --input seeds.txt \
+  --output report.json
+```
+
+Read seed URLs from standard input instead of a file (one URL per line; end input with Ctrl+Z on Windows or Ctrl+D on Unix):
+
+```bash
+java -jar target/ex1-1.0-jar-with-dependencies.jar \
+  --analysis WORD_COUNT,BROKEN_LINKS \
+  --poolsize 2 \
+  --depth 1 \
+  --input - \
   --output report.json
 ```
 
