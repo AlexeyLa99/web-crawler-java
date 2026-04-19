@@ -95,13 +95,13 @@
 
 ### 🟣 טליה – `feature/crawltask-tb`
 
-- [ ] `crawler/CrawlTask.java`:
-  - [ ] בדיקה אטומית: `visited.putIfAbsent(url, order)` – אם כבר קיים → return מיידי
-  - [ ] קריאה ל-`PageFetcher.fetch()`
-  - [ ] הכנסת `PageData` לרשימה בסדר גילוי (לפי order value)
-  - [ ] אם depth < maxDepth: submit child tasks (אחרי DomainFilter)
-  - [ ] `finally`: `pendingTasks.decrementAndGet()`, אם הגיע ל-0 → `doneLatch.countDown()`
-  - [ ] קריאה ל-`subject.notifyObservers(pageData)`
+- [x] `crawler/CrawlTask.java`:
+  - [x] בדיקה אטומית: `visited.putIfAbsent(url, order)` – אם כבר קיים → return מיידי
+  - [x] קריאה ל-`PageFetcher.fetch()`
+  - [x] הכנסת `PageData` לרשימה בסדר גילוי (לפי order value)
+  - [x] אם depth < maxDepth: submit child tasks (אחרי DomainFilter)
+  - [x] `finally`: `pendingTasks.decrementAndGet()`, אם הגיע ל-0 → `doneLatch.countDown()`
+  - [x] קריאה ל-`subject.notifyObservers(pageData)`
 
 ---
 
@@ -151,7 +151,7 @@
 | Sprint 3 – Analyses ext | אלכסיי | 4 | 4 ✅ |
 | Sprint 3 – PageFetcher | טליה | 9 | 9 ✅ |
 | Sprint 4 – WebCrawler | אלכסיי | 3 | 3 ✅ |
-| Sprint 4 – CrawlTask | טליה | 6 | 0 |
+| Sprint 4 – CrawlTask | טליה | 6 | 6 ✅ |
 | Sprint 5 – Main | אלכסיי | 3 | 0 |
 | Sprint 5 – Docs & Tests | טליה | 10 | 0 |
-| **סה"כ** | | **61** | **42** |
+| **סה"כ** | | **61** | **48** |
