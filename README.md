@@ -2,22 +2,64 @@
 
 # EX1 – Concurrent WebCrawler & Content Analyzer
 
-## Student Emails
+Concurrent web crawler in Java: reads seed URLs, fetches pages in parallel (thread pool), tracks visited URLs, runs pluggable analyses, and writes a JSON or CSV report.
+
+## Student Emails (required format)
 
 - alexayla@edu.jmc.ac.il
 - taliabar@edu.jmc.ac.il
 
+## Requirements
+
+- **JDK 25** (matches `pom.xml`)
+- **Maven 3.9+** *or* use the included Maven Wrapper (`mvnw` / `mvnw.cmd`)
+
 ## How to Compile
 
-Requirements: Java JDK 25, Maven 3.9+
+From the repository root:
 
 ```bash
 mvn package -q
 ```
 
-This produces `target/ex1-1.0-jar-with-dependencies.jar`.
+On Windows (PowerShell), if `mvn` is not on your PATH:
+
+```powershell
+.\mvnw.cmd package -q
+```
+
+Artifact produced:
+
+- `target/ex1-1.0-jar-with-dependencies.jar`
 
 ## How to Run
+
+### Required flags
+
+| Flag | Meaning |
+|------|---------|
+| `--analysis` | Comma-separated strategy names (see below) |
+| `--poolsize` | Thread-pool size (integer > 0) |
+| `--depth` | Maximum crawl depth (integer ≥ 0; `0` = seeds only) |
+| `--input` | Path to a seed URL file, or `-` to read seeds from **stdin** |
+| `--output` | Output report path (JSON or CSV) |
+
+### Optional flags
+
+| Flag | Meaning |
+|------|---------|
+| `--format` | `json` (default) or `csv` |
+| `--domains` | Comma-separated hostname whitelist (empty / omitted = all hosts allowed) |
+
+### Recognized analysis names
+
+- `WORD_COUNT`
+- `BROKEN_LINKS`
+- `MOST_LINKED_DOMAIN`
+- `KEYWORD_FREQUENCY`
+- `AVERAGE_WORD_COUNT` (extension)
+
+### Example: file input + JSON output
 
 ```bash
 java -jar target/ex1-1.0-jar-with-dependencies.jar \
@@ -28,7 +70,9 @@ java -jar target/ex1-1.0-jar-with-dependencies.jar \
   --output report.json
 ```
 
-Read seed URLs from standard input instead of a file (one URL per line; end input with Ctrl+Z on Windows or Ctrl+D on Unix):
+### Example: stdin seeds (`--input -`)
+
+One URL per line; blank lines and lines starting with `#` are ignored. End stdin: **Ctrl+Z** then Enter on Windows, **Ctrl+D** on Linux/macOS.
 
 ```bash
 java -jar target/ex1-1.0-jar-with-dependencies.jar \
@@ -39,31 +83,58 @@ java -jar target/ex1-1.0-jar-with-dependencies.jar \
   --output report.json
 ```
 
-Optional flags:
+### Example: CSV output + domain filter
 
 ```bash
-  --format csv              # output format: json (default) or csv
-  --domains example.com,foo.org   # restrict crawl to these hostnames
+java -jar target/ex1-1.0-jar-with-dependencies.jar \
+  --analysis WORD_COUNT,MOST_LINKED_DOMAIN \
+  --poolsize 4 \
+  --depth 2 \
+  --input seeds.txt \
+  --output report.csv \
+  --format csv \
+  --domains en.wikipedia.org,example.com
 ```
+
+### Output shape (JSON)
+
+The report contains top-level keys `pages` (array of page objects) and `analysis` (object keyed by strategy name). Pages appear in **first-discovery order**.
+
+### Error messages (stdout / stderr)
+
+| Situation | Message | Stream |
+|-----------|---------|--------|
+| Invalid / missing input file | `invalid input file` | stderr |
+| Invalid pool size | `invalid pool size` | stderr |
+| Invalid depth | `invalid depth` | stderr |
+| Unknown analysis name | `<NAME> is unknown` | stderr |
+| No valid analyses after filtering | `no valid analysis` | stderr |
+| Bad URL shape / scheme | `<url> malformed` | stderr |
+| Network / fetch failure | `<url> failed` | stderr |
+| Output write failure | `error saving report` | stdout |
 
 ## Design Patterns Used
 
-1. **Strategy** – `AnalysisStrategy` interface with 5 implementations; `OutputWriter` interface with 2 implementations
-2. **Factory** – `AnalysisFactory` creates analysis strategies by name; `OutputWriterFactory` creates output writers by format string
-3. **Builder** – `CrawlConfig.Builder` constructs the immutable configuration object
-4. **Template Method** – `AbstractAnalysis` defines the `analyze()` skeleton; subclasses implement `doAnalyze()`
-5. **Observer** – `CrawlObserver` / `CrawlSubject` interfaces notify registered analyses as pages are discovered
+1. **Strategy** – `AnalysisStrategy` with multiple concrete analyses; `OutputWriter` with JSON/CSV implementations
+2. **Factory** – `AnalysisFactory`, `OutputWriterFactory`
+3. **Builder** – `CrawlConfig.Builder` for immutable configuration
+4. **Template Method** – `AbstractAnalysis` (`analyze` / `doAnalyze`)
+5. **Observer** – `CrawlObserver` / `CrawlSubject` for page-crawl notifications
 
 ## Implemented Extensions
 
-1. **CSV output format** (`--format csv`) – writes pages as CSV rows and analysis as key=value lines
-2. **Domain filtering** (`--domains d1,d2,...`) – restricts crawling to a hostname whitelist
-3. **AVERAGE_WORD_COUNT analysis** – additional analysis reporting average words per crawled page
-4. **Console seed input** – `ConsoleInputReader` reads seed URLs from standard input (one URL per line; blank lines and `#` comments are skipped). Wire it in `Main` when stdin-based input is chosen for your run configuration.
+1. **CSV output** – `--format csv` (`CsvOutputWriter`)
+2. **Domain whitelist** – `--domains host1,host2,...` (`DomainFilter`)
+3. **AVERAGE_WORD_COUNT** – extra analysis (`AverageWordCountAnalysis`)
+4. **Console seed input** – `--input -` uses `ConsoleInputReader` (stdin)
+
+## Seeds file
+
+`seeds.txt` in the repo root lists several HTTP(S) seed URLs (with `#` comments). For course-scale testing (100+ pages), increase `--depth` and/or add broader seeds; respect site policies and rate limits.
 
 ## Manual test checklist (before submission)
 
-Run these after `Main` integrates the full pipeline (`CliParser` → `InputReader` → `WebCrawler` → analyses → `CrawlResult` → `OutputWriter`):
+Run and tick off (record commands + short notes for the staff / journal):
 
 - [ ] `poolSize=1`
 - [ ] `poolSize=4`
@@ -71,6 +142,4 @@ Run these after `Main` integrates the full pipeline (`CliParser` → `InputReade
 - [ ] `depth=2`
 - [ ] Duplicate seed URLs in the input file
 - [ ] Graph cycles – crawler finishes (no hang)
-- [ ] Total crawl reaches **100+ pages** with your final `seeds.txt`
-
-Record the exact command lines and short notes on results in your PR or lab journal as required by the course staff.
+- [ ] Total crawl reaches **100+ pages** with your chosen `seeds.txt` and depth
