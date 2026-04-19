@@ -1,0 +1,9 @@
+# Seed URLs for webcrawler
+# Java concurrency and design pattern topics
+# At depth=2 with poolsize=4 these yield 100+ pages total
+https://en.wikipedia.org/wiki/Web_crawler
+https://en.wikipedia.org/wiki/Design_Patterns
+https://en.wikipedia.org/wiki/Thread_(computing)
+https://en.wikipedia.org/wiki/Java_(programming_language)
+https://en.wikipedia.org/wiki/Concurrent_computing
+https://en.wikipedia.org/wiki/Monitor_(synchronization)

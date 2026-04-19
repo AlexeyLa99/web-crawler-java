@@ -1,5 +1,6 @@
 package webcrawler.crawler;
 
+import java.util.Set;
 import webcrawler.filter.DomainFilter;
 import webcrawler.result.PageData;
 
@@ -35,6 +36,31 @@ public class CrawlTask implements Runnable {
 
     @Override
     public void run() {
-        // TODO (Talia): implement crawl logic here
+        try {
+            int order = crawler.orderCounter.getAndIncrement();
+            Integer existing = crawler.visited.putIfAbsent(url, order);
+            if (existing != null) {
+                return;
+            }
+
+            PageData pageData = PageFetcher.fetch(url, depth);
+            crawler.results.add(pageData);
+
+            if (depth < crawler.getConfig().getMaxDepth()) {
+                Set<String> allowedDomains = crawler.getConfig().getAllowedDomains();
+                for (String childUrl : pageData.getOutgoingLinkUrls()) {
+                    if (DomainFilter.isAllowed(childUrl, allowedDomains)) {
+                        crawler.submit(childUrl, depth + 1);
+                    }
+                }
+            }
+
+            crawler.getSubject().notifyObservers(pageData);
+        } finally {
+            if (crawler.pendingTasks.decrementAndGet() == 0) {
+                crawler.doneLatch.countDown();
+            }
+        }
     }
+
 }

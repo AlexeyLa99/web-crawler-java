@@ -1,5 +1,6 @@
 package webcrawler.result;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.Collections;
 import java.util.List;
 
@@ -65,6 +66,7 @@ public class PageData {
     public int getOutgoingLinks()   { return outgoingLinkUrls.size(); }
 
     /** @return the absolute URLs of outgoing links found on this page */
+    @JsonIgnore
     public List<String> getOutgoingLinkUrls() { return outgoingLinkUrls; }
 
     /** @return the hostname (domain) of this page's URL */
