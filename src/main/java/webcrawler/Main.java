@@ -12,25 +12,37 @@ import webcrawler.crawler.WebCrawler;
 import webcrawler.input.ConsoleInputReader;
 import webcrawler.input.FileInputReader;
 import webcrawler.input.InputReader;
-import webcrawler.output.OutputWriter;
 import webcrawler.output.OutputWriterFactory;
 import webcrawler.result.CrawlResult;
 import webcrawler.result.PageData;
 
 /**
- * Entry point – wires CLI → InputReader → WebCrawler → Analyses → OutputWriter.
+ * Entry point: parses CLI, runs the concurrent crawl, executes analyses, writes the report.
  *
  * @author Alexey Laikov
  * @author Talia Barzilai
  */
-public class Main {
+public final class Main {
 
-    public static void main(String[] args) throws InterruptedException {
+    private Main() {
+    }
+
+    public static void main(String[] args) {
+        try {
+            run(args);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            System.exit(1);
+        }
+    }
+
+    private static void run(String[] args) throws InterruptedException {
         CrawlConfig config = CliParser.parse(args);
+        validate(config);
 
-        InputReader inputReader = config.getInputFile() != null
-                ? new FileInputReader(config.getInputFile())
-                : new ConsoleInputReader();
+        InputReader inputReader = "-".equals(config.getInputFile())
+                ? new ConsoleInputReader()
+                : new FileInputReader(config.getInputFile());
 
         WebCrawler crawler = new WebCrawler(config, inputReader);
         List<PageData> pages;
@@ -41,21 +53,42 @@ public class Main {
             return;
         }
 
-        Map<String, Object> analysisMap = new LinkedHashMap<>();
+        Map<String, Object> analysis = new LinkedHashMap<>();
         for (String name : config.getAnalyses()) {
             AnalysisStrategy strategy = AnalysisFactory.createStrategy(name);
             if (strategy != null) {
-                analysisMap.put(name, strategy.analyze(pages));
+                analysis.put(name, strategy.analyze(pages));
             }
         }
 
-        CrawlResult result = new CrawlResult(pages, analysisMap);
-
-        OutputWriter writer = OutputWriterFactory.createWriter(config.getFormat());
+        CrawlResult result = new CrawlResult(pages, analysis);
         try {
-            writer.write(result, config.getOutputFile());
+            OutputWriterFactory.createWriter(config.getFormat()).write(result, config.getOutputFile());
         } catch (IOException e) {
             System.err.println("error saving report");
+        }
+    }
+
+    private static void validate(CrawlConfig config) {
+        if (config.getAnalyses() == null || config.getAnalyses().isEmpty()) {
+            System.err.println("no valid analysis");
+            System.exit(1);
+        }
+        if (config.getPoolSize() <= 0) {
+            System.err.println("invalid pool size");
+            System.exit(1);
+        }
+        if (config.getMaxDepth() < 0) {
+            System.err.println("invalid depth");
+            System.exit(1);
+        }
+        if (config.getInputFile() == null || config.getInputFile().isBlank()) {
+            System.err.println("invalid input file");
+            System.exit(1);
+        }
+        if (config.getOutputFile() == null || config.getOutputFile().isBlank()) {
+            System.err.println("missing --output path");
+            System.exit(1);
         }
     }
 }
