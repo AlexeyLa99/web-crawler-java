@@ -109,9 +109,9 @@
 
 ### 🔵 אלכסיי – `feature/main-al`
 
-- [ ] `Main.java` – חיבור הכל: `CliParser` → `InputReader` → `WebCrawler` → ניתוחים → `CrawlResult` → `OutputWriter`
-  - [ ] טיפול ב-`IOException` עם `error saving report`
-- [ ] `seeds.txt` – 5+ URLs שיניבו **100+ דפים בסך הכל**
+- [x] `Main.java` – חיבור הכל: `CliParser` → `InputReader` → `WebCrawler` → ניתוחים → `CrawlResult` → `OutputWriter`
+  - [x] טיפול ב-`IOException` עם `error saving report`
+- [x] `seeds.txt` – 5+ URLs שיניבו **100+ דפים בסך הכל**
 
 ### 🟣 טליה – `feature/docs-tb`
 
@@ -152,6 +152,6 @@
 | Sprint 3 – PageFetcher | טליה | 9 | 9 ✅ |
 | Sprint 4 – WebCrawler | אלכסיי | 3 | 3 ✅ |
 | Sprint 4 – CrawlTask | טליה | 6 | 6 ✅ |
-| Sprint 5 – Main | אלכסיי | 3 | 0 |
+| Sprint 5 – Main | אלכסיי | 3 | 3 ✅ |
 | Sprint 5 – Docs & Tests | טליה | 10 | 0 |
-| **סה"כ** | | **61** | **48** |
+| **סה"כ** | | **61** | **51** |
