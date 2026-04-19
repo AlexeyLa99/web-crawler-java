@@ -24,9 +24,8 @@ public class MostLinkedDomainAnalysis extends AbstractAnalysis {
                         PageData::getDomain,
                         Collectors.summingInt(PageData::getOutgoingLinks)))
                 .entrySet().stream()
-                .max(Comparator.<Map.Entry<String, Integer>>
-                        comparingByValue()
-                        .thenComparing(Comparator.comparing(Map.Entry::getKey).reversed()))
+                .max(Comparator.<Map.Entry<String, Integer>, Integer>comparing(Map.Entry::getValue)
+                        .thenComparing(Comparator.<Map.Entry<String, Integer>, String>comparing(Map.Entry::getKey).reversed()))
                 .map(Map.Entry::getKey)
                 .orElse("");
     }

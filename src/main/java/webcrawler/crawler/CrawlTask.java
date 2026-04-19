@@ -1,15 +1,6 @@
 package webcrawler.crawler;
 
-import java.io.IOException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.HashSet;
 import java.util.Set;
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import webcrawler.filter.DomainFilter;
 import webcrawler.result.PageData;
 
@@ -27,8 +18,6 @@ import webcrawler.result.PageData;
  * </ol>
  */
 public class CrawlTask implements Runnable {
-
-    private static final int FETCH_TIMEOUT_MS = 3000;
 
     private final String url;
     private final int depth;
@@ -59,7 +48,7 @@ public class CrawlTask implements Runnable {
 
             if (depth < crawler.getConfig().getMaxDepth()) {
                 Set<String> allowedDomains = crawler.getConfig().getAllowedDomains();
-                for (String childUrl : extractOutgoingLinks(url)) {
+                for (String childUrl : pageData.getOutgoingLinkUrls()) {
                     if (DomainFilter.isAllowed(childUrl, allowedDomains)) {
                         crawler.submit(childUrl, depth + 1);
                     }
@@ -74,40 +63,4 @@ public class CrawlTask implements Runnable {
         }
     }
 
-    private Set<String> extractOutgoingLinks(String sourceUrl) {
-        Set<String> outgoing = new HashSet<>();
-        try {
-            Connection.Response response = Jsoup.connect(sourceUrl)
-                    .timeout(FETCH_TIMEOUT_MS)
-                    .followRedirects(true)
-                    .ignoreHttpErrors(true)
-                    .execute();
-
-            if (response.statusCode() != 200) {
-                return outgoing;
-            }
-
-            Document doc = response.parse();
-            Elements anchors = doc.select("a[href]");
-            for (Element anchor : anchors) {
-                String absolute = anchor.attr("abs:href");
-                if (absolute == null || absolute.isBlank()) {
-                    continue;
-                }
-                try {
-                    URI uri = new URI(absolute.trim());
-                    String scheme = uri.getScheme();
-                    if (uri.isAbsolute() && scheme != null
-                            && (scheme.equalsIgnoreCase("http") || scheme.equalsIgnoreCase("https"))) {
-                        outgoing.add(uri.toString());
-                    }
-                } catch (URISyntaxException ignored) {
-                    // Skip malformed outgoing links.
-                }
-            }
-        } catch (IOException | IllegalArgumentException ignored) {
-            // Keep crawler resilient; PageFetcher already reports fetch failures.
-        }
-        return outgoing;
-    }
 }
