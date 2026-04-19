@@ -94,15 +94,15 @@
   - [ ] `crawl()` – טעינת זרעים, submit של `CrawlTask` ראשוניות (increment לפני submit)
   - [ ] `crawl()` – `doneLatch.await()` + `pool.shutdown()`
 
-### 🟣 טליה – `feature/crawltask-tb`
+### 🟣 טליה – `feature/crawltask-tb` ✅ (ב־PR – מיזוג ל־`main` אחרי review)
 
-- [ ] `crawler/CrawlTask.java`:
-  - [ ] בדיקה אטומית: `visited.putIfAbsent(url, order)` – אם כבר קיים → return מיידי
-  - [ ] קריאה ל-`PageFetcher.fetch()`
-  - [ ] הכנסת `PageData` לרשימה בסדר גילוי (לפי order value)
-  - [ ] אם depth < maxDepth: submit child tasks (אחרי DomainFilter)
-  - [ ] `finally`: `pendingTasks.decrementAndGet()`, אם הגיע ל-0 → `doneLatch.countDown()`
-  - [ ] קריאה ל-`subject.notifyObservers(pageData)`
+- [x] `crawler/CrawlTask.java`:
+  - [x] בדיקה אטומית: `visited.putIfAbsent(url, order)` – אם כבר קיים → return מיידי
+  - [x] קריאה ל-`PageFetcher.fetch()`
+  - [x] הכנסת `PageData` לרשימה בסדר גילוי (לפי order value)
+  - [x] אם depth < maxDepth: submit child tasks (אחרי DomainFilter)
+  - [x] `finally`: `pendingTasks.decrementAndGet()`, אם הגיע ל-0 → `doneLatch.countDown()`
+  - [x] קריאה ל-`subject.notifyObservers(pageData)`
 
 ---
 
@@ -117,11 +117,11 @@
 ### 🟣 טליה – `feature/docs-tb`
 
 - [ ] `README.md`:
-  - [ ] מיילים בפורמט `edu.jmc.ac.il` (**חובה! מייל חסר = -5 נקודות**)
-  - [ ] הוראות קומפילציה מדויקות
-  - [ ] הוראות הרצה מדויקות
-  - [ ] רשימת Design Patterns בשימוש
-  - [ ] רשימת הרחבות שמומשו
+  - [x] מיילים בפורמט `edu.jmc.ac.il` (**חובה! מייל חסר = -5 נקודות**)
+  - [x] הוראות קומפילציה מדויקות
+  - [x] הוראות הרצה מדויקות
+  - [x] רשימת Design Patterns בשימוש
+  - [x] רשימת הרחבות שמומשו
 - [ ] בדיקות:
   - [ ] `poolSize=1`
   - [ ] `poolSize=4`
@@ -137,7 +137,7 @@
 
 - [ ] commits משמעותיים לאורך כל הפיתוח
 - [x] לפחות branch אחד עם merge (**לא למחוק branches לפני ההגשה!**) – `feature/analyses-ext-al` → `main` (PR #1)
-- branches שנוצרו עד כה: `feature/cli-complete` ✅ | `feature/analyses-ext-al` ✅ (merged)
+- branches שנוצרו עד כה: `feature/cli-complete` ✅ | `feature/analyses-ext-al` ✅ (merged) | `feature/page-fetcher-tb` ✅ (merged PR #2) | `feature/crawltask-tb` (PR פתוח)
 
 ---
 
@@ -152,7 +152,7 @@
 | Sprint 3 – Analyses ext | אלכסיי | 4 | 4 ✅ |
 | Sprint 3 – PageFetcher | טליה | 10 | 10 ✅ |
 | Sprint 4 – WebCrawler | אלכסיי | 3 | 0 |
-| Sprint 4 – CrawlTask | טליה | 6 | 0 |
+| Sprint 4 – CrawlTask | טליה | 6 | 6 ✅ |
 | Sprint 5 – Main | אלכסיי | 3 | 0 |
-| Sprint 5 – Docs & Tests | טליה | 10 | 0 |
-| **סה"כ** | | **62** | **40** |
+| Sprint 5 – Docs & Tests | טליה | 10 | 5 (חלקי: README; בדיקות ידניות נשארות) |
+| **סה"כ** | | **62** | **51** |

@@ -48,3 +48,18 @@ Optional flags:
 1. **CSV output format** (`--format csv`) – writes pages as CSV rows and analysis as key=value lines
 2. **Domain filtering** (`--domains d1,d2,...`) – restricts crawling to a hostname whitelist
 3. **AVERAGE_WORD_COUNT analysis** – additional analysis reporting average words per crawled page
+4. **Console seed input** – `ConsoleInputReader` reads seed URLs from standard input (one URL per line; blank lines and `#` comments are skipped). Wire it in `Main` when stdin-based input is chosen for your run configuration.
+
+## Manual test checklist (before submission)
+
+Run these after `Main` integrates the full pipeline (`CliParser` → `InputReader` → `WebCrawler` → analyses → `CrawlResult` → `OutputWriter`):
+
+- [ ] `poolSize=1`
+- [ ] `poolSize=4`
+- [ ] `depth=0`
+- [ ] `depth=2`
+- [ ] Duplicate seed URLs in the input file
+- [ ] Graph cycles – crawler finishes (no hang)
+- [ ] Total crawl reaches **100+ pages** with your final `seeds.txt`
+
+Record the exact command lines and short notes on results in your PR or lab journal as required by the course staff.
