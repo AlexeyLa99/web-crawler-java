@@ -4,7 +4,7 @@
 
 Concurrent web crawler in Java: reads seed URLs, fetches pages in parallel (thread pool), tracks visited URLs, runs pluggable analyses, and writes a JSON or CSV report.
 
-## Student Emails (required format)
+## Student Emails
 
 - alexayla@edu.jmc.ac.il
 - taliabar@edu.jmc.ac.il
@@ -130,16 +130,18 @@ The report contains top-level keys `pages` (array of page objects) and `analysis
 
 ## Seeds file
 
-`seeds.txt` in the repo root lists several HTTP(S) seed URLs (with `#` comments). For course-scale testing (100+ pages), increase `--depth` and/or add broader seeds; respect site policies and rate limits.
+`seeds.txt` in the repo root lists HTTP(S) seed URLs (one per line, `#` comments supported).
 
-## Manual test checklist (before submission)
+## How to Run Tests
 
-Run and tick off (record commands + short notes for the staff / journal):
+Unit tests are written with JUnit 5 (Jupiter) and live under `src/test/java`.
 
-- [ ] `poolSize=1`
-- [ ] `poolSize=4`
-- [ ] `depth=0`
-- [ ] `depth=2`
-- [ ] Duplicate seed URLs in the input file
-- [ ] Graph cycles – crawler finishes (no hang)
-- [ ] Total crawl reaches **100+ pages** with your chosen `seeds.txt` and depth
+```bash
+mvn test
+```
+
+On Windows (PowerShell), if `mvn` is not on your PATH:
+
+```powershell
+.\mvnw.cmd test
+```

@@ -10,3 +10,16 @@ target/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Local manual-test artifacts (kept out of git; may exist locally)
+manual_*.txt
+manual_*.json
+manual_*.csv
+test_seeds.txt
+test_report.json
+report.json
+report.csv
+
+# Internal working notes (kept locally, not tracked)
+TODO.md
+

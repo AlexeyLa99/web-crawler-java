@@ -81,6 +81,7 @@ public class CliParser {
                     } catch (NumberFormatException e) {
                         System.err.println("invalid pool size");
                         System.exit(1);
+                        return null;
                     }
                     if (n <= 0) {
                         System.err.println("invalid pool size");
@@ -95,6 +96,7 @@ public class CliParser {
                     } catch (NumberFormatException e) {
                         System.err.println("invalid depth");
                         System.exit(1);
+                        return null;
                     }
                     if (d < 0) {
                         System.err.println("invalid depth");
