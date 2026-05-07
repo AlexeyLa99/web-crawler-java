@@ -1,13 +1,6 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/QVsSPEN1)
+# Concurrent WebCrawler & Content Analyzer
 
-# EX1 – Concurrent WebCrawler & Content Analyzer
-
-Concurrent web crawler in Java: reads seed URLs, fetches pages in parallel (thread pool), tracks visited URLs, runs pluggable analyses, and writes a JSON or CSV report.
-
-## Student Emails
-
-- alexayla@edu.jmc.ac.il
-- taliabar@edu.jmc.ac.il
+A multithreaded web crawler built in Java. Reads seed URLs, fetches pages in parallel using a thread pool, tracks visited URLs to avoid duplicates, runs pluggable content analyses, and writes a structured JSON or CSV report.
 
 ## Requirements
 
